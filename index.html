@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APOLLO NEXT × Under the Heavens — Sail &amp; Train · Хорватія</title>
+<meta name="description" content="Тренувальні яхтенні подорожі Apollo Next узбережжям Хорватії. 6 ночей із Marina Kremik, два тренування на день, тренер і капітан. П'ять маршрутів. Кінець вересня — жовтень.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<style>
+  :root{
+    --night:#06161f;
+    --sea:#0b2f43;
+    --sea-2:#0e4257;
+    --sea-3:#0a3950;
+    --foam:#eaf7f6;
+    --ink:#0a1a22;
+    --sun:#ff6a3d;
+    --sun-2:#ffac3a;
+    --teal:#1fc7b6;
+    --teal-deep:#0f8c8a;
+    --sand:#f4e9d6;
+    --muted:#9fc0c8;
+    --line:rgba(255,255,255,.12);
+    --card:rgba(255,255,255,.045);
+    --card-2:rgba(255,255,255,.07);
+    --maxw:1180px;
+    --r:18px;
+    --shadow:0 18px 50px rgba(0,0,0,.35);
+    font-synthesis-weight:none;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;color:var(--foam);background:var(--night);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji",sans-serif;
+    font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(31,199,182,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(255,106,61,.10), transparent 55%),
+      var(--night);
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{line-height:1.1;margin:0 0 .4em;font-weight:800;letter-spacing:-.01em}
+  h2{font-size:clamp(28px,4.4vw,46px)}
+  h3{font-size:clamp(21px,2.6vw,28px)}
+  p{margin:0 0 1em}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .eyebrow{display:inline-flex;align-items:center;gap:.5em;text-transform:uppercase;letter-spacing:.18em;font-size:12.5px;font-weight:800;color:var(--sun-2)}
+  .eyebrow::before{content:"";width:26px;height:2px;background:linear-gradient(90deg,var(--sun),var(--sun-2));display:inline-block;border-radius:2px}
+  .lead{font-size:clamp(18px,2.2vw,21px);color:#d7ecee}
+  .muted{color:var(--muted)}
+  section{padding:78px 0;position:relative}
+  .section-tint{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent)}
+  .divider{height:1px;background:var(--line);max-width:var(--maxw);margin:0 auto}
+
+  /* NAV */
+  header.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(12px);
+    background:rgba(6,22,31,.78);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;gap:18px;max-width:var(--maxw);margin:0 auto;padding:11px 22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--sun),var(--sun-2));display:grid;place-items:center;color:#231000;font-weight:900;box-shadow:0 6px 18px rgba(255,106,61,.4)}
+  .brand small{display:block;font-size:10.5px;letter-spacing:.14em;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .nav-links{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .nav-links a{padding:9px 12px;border-radius:10px;font-size:14.5px;font-weight:600;color:#cfe6e8}
+  .nav-links a:hover{background:var(--card-2);color:#fff}
+  .nav-cta{background:linear-gradient(135deg,var(--sun),var(--sun-2));color:#231000!important;font-weight:800}
+  .nav-toggle{display:none;margin-left:auto;background:var(--card-2);border:1px solid var(--line);color:#fff;width:44px;height:40px;border-radius:10px;font-size:20px;cursor:pointer}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;padding:0}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;max-width:var(--maxw);margin:0 auto;padding:64px 22px 54px}
+  .hero h1{font-size:clamp(34px,6vw,68px);letter-spacing:-.02em;margin-bottom:.25em}
+  .hero h1 .accent{background:linear-gradient(120deg,var(--sun),var(--sun-2) 60%,var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .kls{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 26px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:var(--card-2);border:1px solid var(--line);padding:9px 13px;border-radius:999px;font-size:13.5px;font-weight:700;color:#dff1f1}
+  .chip b{color:var(--sun-2)}
+  .btns{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 20px;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;border:1px solid transparent;transition:.15s transform}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:linear-gradient(135deg,var(--sun),var(--sun-2));color:#231000}
+  .btn-ghost{background:transparent;border-color:var(--line);color:#fff}
+  .hero-art{position:relative;border-radius:24px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);min-height:380px;background:linear-gradient(160deg,#10314a,#0b3a44)}
+  .hero-art>img{width:100%;height:100%;min-height:380px;object-fit:cover}
+  .hero-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,22,31,.04),rgba(6,22,31,.38));pointer-events:none}
+  .photo-credit{position:absolute;right:14px;bottom:12px;z-index:3;background:rgba(6,22,31,.62);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;color:#dff1f1}
+
+  /* Scenes (SVG/CSS imagery, no external assets) */
+  .scene{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);min-height:180px;display:flex;align-items:flex-end;isolation:isolate}
+  .scene .lbl{position:relative;z-index:3;padding:14px 16px;font-weight:800;font-size:15px;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+  .scene .tag{position:absolute;top:12px;left:12px;z-index:3;background:rgba(6,22,31,.6);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--sun-2)}
+  .scene svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+  .scene.photo{background:linear-gradient(160deg,#13415a,#0b3340)}
+  .scene.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+  .scene.photo::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(6,22,31,.02),rgba(6,22,31,.54))}
+
+  /* GRID helpers */
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+  .card.pad-lg{padding:26px}
+  .card h3{margin-bottom:.3em}
+  .card .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,rgba(31,199,182,.22),rgba(255,106,61,.18));border:1px solid var(--line);margin-bottom:14px}
+  .stat{font-size:34px;font-weight:900;letter-spacing:-.02em;background:linear-gradient(120deg,var(--sun),var(--sun-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line);background:var(--card-2)}
+
+  /* TIMELINE (day flow) */
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .flow .step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .flow .time{font-weight:900;color:var(--sun-2);font-size:14px;letter-spacing:.04em}
+  .flow .step h4{margin:.35em 0 .25em;font-size:16px}
+  .flow .step p{font-size:13.5px;margin:0;color:#cfe3e5}
+
+  /* FORMAT chips */
+  .fmt{display:flex;flex-wrap:wrap;gap:9px}
+  .fmt span{background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;font-weight:700}
+  .fmt span b{color:var(--teal)}
+
+  /* ROUTES */
+  .routes-tabs{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 26px}
+  .rtab{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:12px 15px;font-weight:800;font-size:14px;color:#dff1f1;display:flex;gap:10px;align-items:center;transition:.15s}
+  .rtab .n{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--card-2);font-size:13px;color:var(--sun-2)}
+  .rtab:hover{border-color:var(--sun-2)}
+  .rtab.active{background:linear-gradient(135deg,rgba(255,106,61,.95),rgba(255,172,58,.95));color:#231000;border-color:transparent}
+  .rtab.active .n{background:rgba(0,0,0,.18);color:#231000}
+  .route-panel{display:none;animation:fade .35s ease}
+  .route-panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .route-head{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch;margin-bottom:22px}
+  .route-meta{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+  .route-meta .m{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:10px 13px;font-size:13px;font-weight:700}
+  .route-meta .m b{display:block;font-size:18px;color:var(--sun-2)}
+
+  /* stops strip */
+  .strip{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:6px 0 4px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+  .stop{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:78px}
+  .stop .dot{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--sun),var(--sun-2));box-shadow:0 0 0 4px rgba(255,106,61,.18)}
+  .stop.home .dot{background:linear-gradient(135deg,var(--teal),var(--teal-deep));box-shadow:0 0 0 4px rgba(31,199,182,.2)}
+  .stop .nm{font-size:12.5px;font-weight:800;margin-top:7px}
+  .stop .sub{font-size:11px;color:var(--muted)}
+  .leg{flex:1;min-width:30px;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px);position:relative;margin:0 2px 22px;align-self:center}
+  .leg span{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:10.5px;color:var(--muted);background:var(--night);padding:0 5px;white-space:nowrap}
+
+  /* day table */
+  .days{display:grid;gap:10px;margin-top:18px}
+  .day{display:grid;grid-template-columns:128px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .day .dleft{padding:14px 14px;background:linear-gradient(160deg,rgba(31,199,182,.14),rgba(255,106,61,.10));border-right:1px solid var(--line)}
+  .day .dnum{font-weight:900;font-size:15px}
+  .day .dmove{font-size:12px;color:#cfe3e5;margin-top:4px}
+  .day .dmove b{color:var(--sun-2)}
+  .day .dright{padding:13px 15px;display:grid;gap:9px}
+  .sess{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start}
+  .sess .b{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;padding:5px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;justify-self:start}
+  .b.am{background:rgba(255,172,58,.14);color:var(--sun-2)}
+  .b.pm{background:rgba(31,199,182,.14);color:var(--teal)}
+  .b.sail{background:rgba(255,255,255,.06);color:#dbeef0}
+  .sess p{margin:0;font-size:14px;color:#e6f3f4}
+  .sess p b{color:#fff}
+  .hl{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .hl span{font-size:12.5px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-weight:600}
+
+  /* weather rows */
+  .wx{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .wind{display:grid;gap:12px}
+  .wind .w{display:grid;grid-template-columns:120px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .wind .w .name{font-weight:900;color:var(--sun-2)}
+  .wind .w p{margin:0;font-size:14px}
+
+  .note{background:linear-gradient(120deg,rgba(255,106,61,.12),rgba(255,172,58,.06));border:1px solid rgba(255,172,58,.3);border-radius:14px;padding:16px 18px;font-size:14.5px}
+  .note b{color:var(--sun-2)}
+
+  .map-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:13px;color:#cfe3e5}
+  .map-legend i{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+  .map-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:stretch;margin-top:22px}
+  .map-embed{padding:14px}
+  .map-embed iframe{width:100%;height:100%;min-height:420px;border:0;border-radius:12px;background:#0c3346}
+  .map-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .map-actions a{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:12.5px;font-weight:800;background:var(--card-2);color:#dff1f1}
+  .map-actions a:hover{border-color:var(--sun-2);color:#fff}
+  .map-routes{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 12px}
+  .mbtn{cursor:pointer;border:1px solid var(--line);background:var(--card);color:#dff1f1;border-radius:10px;padding:8px 12px;font-weight:800;font-size:13px;transition:.15s}
+  .mbtn:hover{border-color:var(--sun-2)}
+  .mbtn.active{background:linear-gradient(135deg,var(--sun),var(--sun-2));color:#231000;border-color:transparent}
+  #livemap{height:480px;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:#0c3346}
+  .leaflet-popup-content{font-weight:700;color:#0a1a22;margin:10px 12px}
+  .leaflet-container{font-family:inherit}
+
+  footer{padding:54px 0 40px;border-top:1px solid var(--line);background:linear-gradient(180deg,transparent,rgba(0,0,0,.25))}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}
+  footer a:hover{color:var(--sun-2)}
+  .eco{margin-top:24px;font-size:13px;color:var(--muted)}
+
+  .kicker-num{font-size:13px;font-weight:900;color:var(--sun-2);letter-spacing:.06em}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;padding-top:42px}
+    .hero-art{min-height:300px;order:-1}
+    .g3,.g4,.wx{grid-template-columns:repeat(2,1fr)}
+    .flow{grid-template-columns:repeat(2,1fr)}
+    .route-head{grid-template-columns:1fr}
+    .map-layout{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .nav-links{position:fixed;inset:58px 12px auto 12px;flex-direction:column;align-items:stretch;background:rgba(8,26,36,.98);border:1px solid var(--line);border-radius:16px;padding:12px;display:none;box-shadow:var(--shadow)}
+    .nav-links.open{display:flex}
+    .nav-toggle{display:block}
+  }
+  @media(max-width:620px){
+    .g2,.g3,.g4,.wx{grid-template-columns:1fr}
+    .flow{grid-template-columns:1fr}
+    .day{grid-template-columns:1fr}
+    .day .dleft{border-right:none;border-bottom:1px solid var(--line)}
+    .sess{grid-template-columns:1fr}
+    section{padding:58px 0}
+    .foot-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body class="no-js">
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top">
+      <span class="logo">A</span>
+      <span>APOLLO&nbsp;NEXT<small>Sail &amp; Train · Croatia</small></span>
+    </a>
+    <button class="nav-toggle" aria-label="Меню" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+    <nav class="nav-links" id="navlinks">
+      <a href="#concept">Концепція</a>
+      <a href="#day">День</a>
+      <a href="#yacht">Яхта</a>
+      <a href="#weather">Погода</a>
+      <a href="#kit">Інвентар</a>
+      <a href="#map">Карта</a>
+      <a href="#routes">Маршрути</a>
+      <a href="#team">Команда</a>
+      <a class="nav-cta" href="#contact">Забронювати</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Apollo Next × Under the Heavens</span>
+      <h1>Тиждень під вітрилами,<br><span class="accent">де тренування — щодня</span></h1>
+      <p class="lead">Групова яхтенна подорож узбережжям Хорватії. Виходимо з Marina Kremik під Сплітом, ідемо островами Далмації, і двічі на день тренуємось — на палубі, на дошці SUP і на березі. Тренер Apollo поруч, капітан веде яхту, маршрут підлаштовуємо під вітер.</p>
+      <div class="kls">
+        <span class="chip">⛵ <b>6 ночей</b> на яхті</span>
+        <span class="chip">🏝 <b>Marina Kremik</b>, Primošten</span>
+        <span class="chip">💪 <b>2 тренування</b> на день</span>
+        <span class="chip">🍂 <b>кінець вересня — жовтень</b></span>
+        <span class="chip">🧭 <b>5 маршрутів</b> на вибір</span>
+      </div>
+      <div class="btns">
+        <a class="btn btn-primary" href="#routes">Подивитись маршрути →</a>
+        <a class="btn btn-ghost" href="#concept">Як це влаштовано</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img src="apollo-sail-and-train-assets/uth-hero-yacht.jpg" alt="Вітрильна яхта Under the Heavens у бухті біля узбережжя Хорватії" loading="lazy">
+      <span class="photo-credit">Фото: Under the Heavens</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONCEPT -->
+<section id="concept" class="section-tint">
+  <div class="wrap">
+    <span class="eyebrow">Концепція</span>
+    <h2>Не круїз. Тренувальна експедиція на воді.</h2>
+    <p class="lead" style="max-width:850px">Гості Apollo Next люблять рух і люблять компанію. Ми з'єднали дві речі: справжню подорож під вітрилами Адріатикою — і структуру тренувань, до якої звикли в клубі. Це не «фітнес замість відпочинку». Це відпочинок, від якого тіло стає сильнішим, а голова — порожнішою (у хорошому сенсі).</p>
+    <div class="grid g3" style="margin-top:26px">
+      <div class="card pad-lg">
+        <div class="ic">🌅</div>
+        <h3>Ритм, а не графік</h3>
+        <p class="muted">Ранок — м'яка активація на світанку, поки море дзеркальне. Удень — перехід під вітрилами та купання. Надвечір — головне тренування на березі чи палубі й розтяжка на заході сонця.</p>
+      </div>
+      <div class="card pad-lg">
+        <div class="ic">🧭</div>
+        <h3>Маленька група — своя зграя</h3>
+        <p class="muted">6–8 гостей, тренер і капітан. За тиждень незнайомці стають командою. Це формат, у якому люди повертаються — не за милями, а за людьми поруч.</p>
+      </div>
+      <div class="card pad-lg">
+        <div class="ic">🔬</div>
+        <h3>Фізіологія, не магія</h3>
+        <p class="muted">Кожне заняття має ціль: сила, кардіо, мобільність, відновлення. Той самий науковий підхід, що й у клубі — просто килимок лежить на палубі, а замість дзеркала перед тобою море.</p>
+      </div>
+    </div>
+
+    <div class="card pad-lg" style="margin-top:18px">
+      <span class="kicker-num">НАТХНЕННЯ</span>
+      <h3 style="margin-top:.3em">Звідки росте ідея</h3>
+      <p class="muted" style="margin-bottom:.4em">Дух формату — у маленькій морській команді: спільні переходи, вечері на борту, ранкові брифінги й правило «маршрут попередній — погода вирішує». Структура двох занять на день спирається на світову логіку <b style="color:#dff1f1">yoga&nbsp;&amp;&nbsp;sailing</b> ретритів Хорватії: ранкова практика → перехід → вечірній тренувальний блок, SUP і купання між ними. Зміст тренувань — наш власний, із форматів Apollo Next.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DAY FLOW -->
+<section id="day">
+  <div class="wrap">
+    <span class="eyebrow">Один день у морі</span>
+    <h2>Як влаштований день</h2>
+    <p class="lead" style="max-width:820px">Два тренувальні блоки на день із морем, їжею та сном поміж ними. Час орієнтовний — у вересні–жовтні світловий день коротшає, тож головну практику ставимо ближче до заходу сонця.</p>
+    <div class="flow" style="margin-top:24px">
+      <div class="step">
+        <div class="time">07:30–08:30</div>
+        <h4>Активація</h4>
+        <p>Йога / SUP-йога / мобільність на світанку, поки штиль. Перед сніданком — пробудження тіла, дихання, легке купання.</p>
+      </div>
+      <div class="step">
+        <div class="time">09:00</div>
+        <h4>Сніданок + перехід</h4>
+        <p>Сніданок на палубі, брифінг капітана. Виходимо до наступної бухти — найчастіше під денний бриз «мистраль».</p>
+      </div>
+      <div class="step">
+        <div class="time">12:00–16:00</div>
+        <h4>Море</h4>
+        <p>Купання зі стоянки, SUP, сноркелінг, обід, відпочинок, сонце. За бажанням — відкрита вода й запливи.</p>
+      </div>
+      <div class="step">
+        <div class="time">16:30–18:00</div>
+        <h4>Головне тренування</h4>
+        <p>Функціонал / HIIT / сила / танці на березі чи палубі. Закінчуємо розтяжкою та диханням на заході сонця.</p>
+      </div>
+      <div class="step">
+        <div class="time">19:30</div>
+        <h4>Вечеря та коло</h4>
+        <p>Спільна вечеря, історії дня, плани на завтра. Тиха якірна стоянка, зорі, сон під плескіт води.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:18px">📍 <b>Два тренування щодня</b> веде тренер Apollo. Інтенсивність адаптуємо під групу: поруч можуть бути і новачок, і той, хто плаває Босфор. Навантаження масштабується — мета в тому, щоб усім було і безпечно, і цікаво.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- YACHT -->
+<section id="yacht" class="section-tint">
+  <div class="wrap">
+    <span class="eyebrow">Яхта · партнер Under the Heavens</span>
+    <h2>Наш дім на тиждень</h2>
+    <p class="lead" style="max-width:840px">Ходимо на вітрильних монокорпусних яхтах 46–52 фути від партнера <b>Under the Heavens</b> (база — Marina Kremik, Primošten). Просторий кокпіт для практик, каюти на двох, прісна вода, сонячні панелі та Wi-Fi на борту.</p>
+    <div class="grid g3" style="margin-top:24px">
+      <div class="card">
+        <div class="scene photo" style="min-height:150px;margin:-22px -22px 16px;border:none;border-radius:18px 18px 0 0">
+          <img src="apollo-sail-and-train-assets/uth-zephyrus-starboard.jpg" alt="Dufour 520 Zephyrus Under the Heavens біля причалу" loading="lazy">
+          <span class="tag">52 фути · флагман</span>
+        </div>
+        <h3>Dufour 520 «Zephyrus»</h3>
+        <p class="muted">3+1 каюти (owner's layout), великий кокпіт, 700 л води + сонячні панелі, Wi-Fi. Найкомфортніший для невеликої групи з простором під практики.</p>
+      </div>
+      <div class="card">
+        <div class="scene photo" style="min-height:150px;margin:-22px -22px 16px;border:none;border-radius:18px 18px 0 0">
+          <img src="apollo-sail-and-train-assets/uth-yacht-interior-2.jpg" alt="Салон яхти Under the Heavens" loading="lazy">
+          <span class="tag">49 футів · родинна</span>
+        </div>
+        <h3>Jeanneau 490 «Baldur»</h3>
+        <p class="muted">4 каюти (family layout), легка в керуванні, 600 л води + сонячні панелі, Wi-Fi. Місткіша конфігурація для повної групи.</p>
+      </div>
+      <div class="card">
+        <div class="scene photo" style="min-height:150px;margin:-22px -22px 16px;border:none;border-radius:18px 18px 0 0">
+          <img src="apollo-sail-and-train-assets/uth-yacht-cockpit.jpg" alt="Каюта яхти Under the Heavens" loading="lazy">
+          <span class="tag">46 футів</span>
+        </div>
+        <h3>Dufour 46</h3>
+        <p class="muted">4 каюти, великий кокпіт, проста й надійна. Гарний баланс місткості та ходових якостей для тижневих маршрутів.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:18px">⚓ Для більшої групи можна йти <b>флотилією з 2 яхт</b> — два тренери, спільні стоянки й берегові заняття на всіх. Скільки бортів і яка модель — підбираємо під розмір групи.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WEATHER -->
+<section id="weather">
+  <div class="wrap">
+    <span class="eyebrow">Погода · кінець вересня — жовтень</span>
+    <h2>Чому саме цей сезон</h2>
+    <p class="lead" style="max-width:840px">«Оксамитовий» кінець сезону в центральній Далмації: море ще тепле, натовпів уже немає, світло м'яке й фотогенічне. Натомість погода мінливіша, ніж улітку — тому маршрут гнучкий, а останнє слово завжди за капітаном.</p>
+    <div class="wx" style="margin-top:24px">
+      <div class="card"><div class="stat">21–26°C</div><p class="muted" style="margin:0">Повітря вдень. Уночі 14–17°C — варто взяти теплий шар.</p></div>
+      <div class="card"><div class="stat">20–23°C</div><p class="muted" style="margin:0">Море. Комфортне для купання весь жовтень.</p></div>
+      <div class="card"><div class="stat">~11–12 год</div><p class="muted" style="margin:0">Світловий день. Захід ~18:45 (кін. вер.) → ~18:00 (кін. жовт.).</p></div>
+      <div class="card"><div class="stat">ранок = штиль</div><p class="muted" style="margin:0">Найспокійніша вода — на світанку. Ідеально для SUP-йоги та запливів.</p></div>
+    </div>
+
+    <h3 style="margin-top:30px">Три вітри, які треба знати</h3>
+    <div class="wind" style="margin-top:8px">
+      <div class="w"><div class="name">Мистраль<br><span class="muted" style="font-weight:600;font-size:12px">NW, денний</span></div><p>М'який термічний бриз, що піднімається пополудні. Наш робочий вітер для переходів. До жовтня слабшає — частіше йдемо під мотором уранці.</p></div>
+      <div class="w"><div class="name">Бура<br><span class="muted" style="font-weight:600;font-size:12px">NE, поривчастий</span></div><p>Сильний холодний вітер із гір, восени частішає. Чистить небо, але може «замкнути» день. Сховок — Жирє (Ступіца), Првіч, захищені бухти.</p></div>
+      <div class="w"><div class="name">Юго<br><span class="muted" style="font-weight:600;font-size:12px">SE, тривалий</span></div><p>Несе хмари, дощ і хвилю. Дає нестабільні відрізки (у жовтні ~12 дощових днів). Сховок — марини й Скрадін угору річкою Крка.</p></div>
+    </div>
+    <div class="note" style="margin-top:18px">🌦 <b>Маршрут попередній — погода вирішує.</b> Капітан може поміняти порядок стоянок, скоротити перехід або сховатись у захищеній бухті. Відкриті ділянки (зовнішні Корнати, Віс) йдемо лише у стабільне вікно. Це не баг — це нормальний морський план.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- KIT / FORMATS -->
+<section id="kit" class="section-tint">
+  <div class="wrap">
+    <span class="eyebrow">Інвентар і формати</span>
+    <h2>Беремо своє. Працюємо з тим, що є.</h2>
+    <p class="lead" style="max-width:840px">Жодного спецзаліза під замовлення — лише наявний інвентар Apollo, який легко вкладається у борт, плюс водне спорядження від яхти. Із цього набору тренер збирає будь-яке з 17 форматів клубу.</p>
+
+    <div class="grid g2" style="margin-top:24px">
+      <div class="card pad-lg">
+        <h3>🎒 Що веземо з клубу</h3>
+        <div class="fmt" style="margin-top:6px">
+          <span>Килимки</span><span>Резинки / петлі</span><span>Легкі гантелі</span><span>Гирі</span>
+          <span>Ролики <b>МФР</b></span><span>TRX / петлі</span><span>Скакалки</span><span>Лапи (Tae-bo)</span>
+          <span>Степ-платформа*</span><span>Колонка</span>
+        </div>
+        <p class="muted" style="margin:14px 0 0;font-size:13.5px">*За потреби. Компактно, повторюваний набір — той самий, що в аутдор-зонах Apollo.</p>
+      </div>
+      <div class="card pad-lg">
+        <h3>🌊 Що дає яхта</h3>
+        <div class="fmt" style="margin-top:6px">
+          <span>SUP-дошки</span><span>Маски / сноркел</span><span>Тендер для висадки</span><span>Просторий кокпіт</span><span>Тиха якірна стоянка</span><span>Прісна вода / душ</span>
+        </div>
+        <p class="muted" style="margin:14px 0 0;font-size:13.5px">SUP — основа «водних» практик: від спокійної SUP-йоги до спринтів на дошці.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:30px">17 форматів Apollo → море і берег</h3>
+    <div class="grid g3" style="margin-top:10px">
+      <div class="card">
+        <span class="pill" style="color:var(--teal)">Мобільність / відновлення</span>
+        <div class="fmt" style="margin-top:12px">
+          <span>YOGA → <b>палуба / берег / SUP</b></span>
+          <span>Pilates → <b>килимок</b></span>
+          <span>Stretching → <b>захід сонця</b></span>
+          <span>МФР → <b>відновлення на палубі</b></span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="pill" style="color:var(--sun-2)">Сила / тонус</span>
+        <div class="fmt" style="margin-top:12px">
+          <span>Functional → <b>берег: гирі+резинки+TRX</b></span>
+          <span>Progress → <b>сила з гантелями</b></span>
+          <span>UpperBody · ABT · BodyTone → <b>килимок+резинки</b></span>
+          <span>Circuit → <b>станції на пляжі</b></span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="pill" style="color:#ff8d6b">Кардіо / HIIT / танці</span>
+        <div class="fmt" style="margin-top:12px">
+          <span>Planet&nbsp;X · Iron&nbsp;Man → <b>берег-WOD, запливи, SUP-спринти</b></span>
+          <span>Tae-bo → <b>лапи на пляжі</b></span>
+          <span>Zumba · DanceX → <b>палуба / пляж на заході</b></span>
+          <span>Step → <b>природні уступи скель</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:18px">➕ До клубних форматів додаються «морські»: <b>SUP-тури, відкрита вода й запливи, сноркелінг, трекінг до фортець і хребтів, дихальні практики</b> на світанку й заході — те, що працює з парасимпатикою і знижує кортизол.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OVERVIEW MAP -->
+<section id="map">
+  <div class="wrap">
+    <span class="eyebrow">Акваторія</span>
+    <h2>Де ми ходимо</h2>
+    <p class="lead" style="max-width:840px">Marina Kremik стоїть якраз посередині однієї з найбагатших акваторій Адріатики: на північ — Шибенський архіпелаг, річка Крка й Корнати; на південь — Рогозниця, Шолта, Дрвеник, Трогір, Брач і Віс. Короткі переходи, десятки захищених бухт.</p>
+    <div class="map-routes" id="mapRoutes">
+      <button class="mbtn active" data-mroute="r1">1 · Баланс</button>
+      <button class="mbtn" data-mroute="r2">2 · Намасте</button>
+      <button class="mbtn" data-mroute="r3">3 · Сила</button>
+      <button class="mbtn" data-mroute="r4">4 · Південь</button>
+      <button class="mbtn" data-mroute="r5">5 · Сімейний</button>
+    </div>
+    <div id="livemap"></div>
+    <div class="map-legend">
+      <span><i style="background:#1fc7b6"></i>База — Marina Kremik</span>
+      <span><i style="background:#ff8a5c"></i>Стоянки обраного маршруту</span>
+      <span class="muted">Мапа © OpenStreetMap. Натисни номер маршруту, щоб побачити трек.</span>
+    </div>
+    <div class="map-layout" id="mapFallback" style="display:none">
+    <div class="card" style="padding:14px">
+      <svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;border-radius:12px;background:linear-gradient(180deg,#0c3346,#072734)" aria-label="Схематична мапа акваторії від Шибеника до Віса">
+        <defs>
+          <linearGradient id="land" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#15405a"/><stop offset="1" stop-color="#0e3348"/></linearGradient>
+        </defs>
+        <!-- mainland -->
+        <path d="M0,0 L1000,0 L1000,120 C840,150 760,150 660,200 C560,250 470,250 360,300 C250,350 150,360 0,430 Z" fill="url(#land)" opacity="0.92"/>
+        <text x="120" y="60" fill="#9fc0c8" font-size="15" font-weight="700" letter-spacing="2">МАТЕРИК · ДАЛМАЦІЯ</text>
+        <!-- islands blobs -->
+        <g fill="#0f3b50" stroke="#1d5870" stroke-width="1.4" opacity="0.96">
+          <ellipse cx="250" cy="360" rx="44" ry="20"/>            <!-- Zlarin/Prvic -->
+          <ellipse cx="350" cy="430" rx="40" ry="17"/>            <!-- Kaprije -->
+          <ellipse cx="270" cy="470" rx="58" ry="18"/>            <!-- Zirje -->
+          <ellipse cx="150" cy="470" rx="70" ry="26"/>            <!-- Kornati cluster -->
+          <ellipse cx="120" cy="430" rx="40" ry="13"/>
+          <ellipse cx="660" cy="360" rx="62" ry="20"/>            <!-- Solta -->
+          <ellipse cx="600" cy="320" rx="24" ry="11"/>            <!-- Drvenik -->
+          <ellipse cx="820" cy="380" rx="70" ry="22"/>            <!-- Brac -->
+          <ellipse cx="760" cy="470" rx="60" ry="18"/>            <!-- Hvar/Pakleni -->
+          <ellipse cx="640" cy="500" rx="46" ry="16"/>            <!-- Vis -->
+        </g>
+        <!-- sun -->
+        <circle cx="900" cy="80" r="34" fill="#ffce7d" opacity="0.85"/>
+        <!-- HOME -->
+        <g>
+          <circle cx="470" cy="250" r="9" fill="#1fc7b6" stroke="#06161f" stroke-width="2"/>
+          <text x="470" y="234" fill="#eaf7f6" font-size="15" font-weight="800" text-anchor="middle">Marina Kremik · Primošten ⚓</text>
+        </g>
+        <!-- pins -->
+        <g font-size="12.5" font-weight="700" fill="#dff1f1" text-anchor="middle">
+          <g fill="#ff8a5c"><circle cx="320" cy="300" r="6"/><circle cx="250" cy="360" r="6"/><circle cx="350" cy="430" r="6"/><circle cx="270" cy="470" r="6"/><circle cx="150" cy="470" r="6"/><circle cx="560" cy="270" r="6"/><circle cx="660" cy="360" r="6"/><circle cx="600" cy="320" r="6"/><circle cx="690" cy="300" r="6"/><circle cx="820" cy="380" r="6"/><circle cx="760" cy="470" r="6"/><circle cx="640" cy="500" r="6"/></g>
+          <text x="330" y="290" fill="#dff1f1">Скрадін / Крка</text>
+          <text x="250" y="346" fill="#dff1f1">Зларін · Првіч</text>
+          <text x="350" y="416" fill="#dff1f1">Каприє</text>
+          <text x="270" y="494" fill="#dff1f1">Жирє</text>
+          <text x="150" y="455" fill="#dff1f1">Корнати</text>
+          <text x="560" y="258" fill="#dff1f1">Рогозниця</text>
+          <text x="668" y="346" fill="#dff1f1">Шолта</text>
+          <text x="600" y="306" fill="#dff1f1">Дрвеник</text>
+          <text x="700" y="288" fill="#dff1f1">Трогір</text>
+          <text x="820" y="366" fill="#dff1f1">Брач · Мілна</text>
+          <text x="760" y="494" fill="#dff1f1">Пакленські</text>
+          <text x="640" y="524" fill="#dff1f1">Віс · Коміжа</text>
+        </g>
+      </svg>
+      <div class="map-legend">
+        <span><i style="background:#1fc7b6"></i>База — Marina Kremik</span>
+        <span><i style="background:#ff8a5c"></i>Можливі стоянки</span>
+        <span class="muted">Схематична мапа — не для навігації.</span>
+      </div>
+    </div>
+    <div class="card map-embed">
+      <iframe title="Інтерактивна карта акваторії Marina Kremik, Split, Šibenik і островів Далмації" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=15.3000%2C42.9500%2C17.1000%2C44.0800&amp;layer=mapnik&amp;marker=43.5716%2C15.9367"></iframe>
+      <div class="map-legend">
+        <span><i style="background:#1fc7b6"></i>Маркер — Marina Kremik</span>
+        <span class="muted">Жива карта для орієнтації по Split, Primošten, Šibenik, Kornati, Šolta, Brač і Vis.</span>
+      </div>
+      <div class="map-actions">
+        <a href="https://www.openstreetmap.org/?mlat=43.5716&amp;mlon=15.9367#map=9/43.5716/15.9367" target="_blank" rel="noopener">Відкрити OSM</a>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=Marina%20Kremik%2C%20Primo%C5%A1ten%2C%20Croatia" target="_blank" rel="noopener">Marina Kremik у Google Maps</a>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROUTES -->
+<section id="routes" class="section-tint">
+  <div class="wrap">
+    <span class="eyebrow">5 маршрутів</span>
+    <h2>Обери свій тиждень</h2>
+    <p class="lead" style="max-width:860px">П'ять різних характерів подорожі — від спокійного відновлення до експедиції на південь. Усі стартують і фінішують у Marina Kremik, усі — 6 ночей, по два тренування на день. Перемикай вкладки.</p>
+
+    <div class="routes-tabs" role="tablist">
+      <button class="rtab active" data-route="r1"><span class="n">1</span> Корнатський баланс</button>
+      <button class="rtab" data-route="r2"><span class="n">2</span> Намасте на воді</button>
+      <button class="rtab" data-route="r3"><span class="n">3</span> Сила і море</button>
+      <button class="rtab" data-route="r4"><span class="n">4</span> Південний вітер</button>
+      <button class="rtab" data-route="r5"><span class="n">5</span> Сімейний бриз</button>
+    </div>
+
+    <!-- ROUTE 1 -->
+    <div class="route-panel active" id="r1">
+      <div class="route-head">
+        <div>
+          <span class="pill" style="color:var(--teal)">Збалансований · флагман</span>
+          <h3 style="margin-top:.5em">№1 · «Корнатський баланс»</h3>
+          <p class="muted">Класика акваторії й наш головний маршрут: Шибенський архіпелаг, водоспади Крки й нацпарк Корнати. Короткі захищені переходи, мінімальний ризик за погодою, повний набір форматів — сила, кардіо, мобільність, вода. Якщо береш один маршрут уперше — бери цей.</p>
+          <div class="route-meta">
+            <div class="m">Рівень<b>Будь-який</b></div>
+            <div class="m">Дистанція<b>~82 NM</b></div>
+            <div class="m">Ночі<b>6</b></div>
+            <div class="m">Акцент<b>Баланс</b></div>
+          </div>
+        </div>
+        <div class="scene" style="min-height:210px">
+          <svg viewBox="0 0 520 280" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b6f6a"/><stop offset="1" stop-color="#0b3a44"/></linearGradient></defs><rect width="520" height="280" fill="url(#s1)"/><circle cx="410" cy="70" r="48" fill="#ffd27a" opacity=".5"/><path d="M0,170 Q130,150 260,168 T520,168 V280 H0Z" fill="#0a2f38"/><path d="M0,210 Q130,190 260,208 T520,206 V280 H0Z" fill="#082a32"/><polygon points="250,70 250,170 320,170" fill="#f3ece0"/><polygon points="246,76 246,170 186,170" fill="#e6d8c6"/><rect x="246" y="70" width="4" height="100" fill="#cfe3e5"/></svg>
+          <span class="tag">Корнати · Крка</span>
+          <span class="lbl">Архіпелаг, водоспади, тиша</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">старт</span></div>
+        <div class="leg"><span>10 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Зларін</span><span class="sub">D1</span></div>
+        <div class="leg"><span>12 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Скрадін</span><span class="sub">D2 · Крка</span></div>
+        <div class="leg"><span>15 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Каприє</span><span class="sub">D3</span></div>
+        <div class="leg"><span>7 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Жирє</span><span class="sub">D4</span></div>
+        <div class="leg"><span>12 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Леврнака</span><span class="sub">D5 · Корнати</span></div>
+        <div class="leg"><span>18 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D6</span></div>
+        <div class="leg"><span>8 NM</span></div>
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">D7</span></div>
+      </div>
+
+      <div class="days">
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 1</div><div class="dmove">Kremik → <b>Зларін</b> · 10 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b pm">Полудень</span><p>Посадка, брифінг із капітаном, вихід. <b>Знайомство з SUP</b> і купання в бухті «коралового острова».</p></div>
+            <div class="sess"><span class="b am">Захід</span><p><b>Розтяжка + дихання</b> на палубі під захід сонця. Тихий вечір на буї.</p></div>
+          </div>
+        </div>
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 2</div><div class="dmove">Зларін → <b>Скрадін</b> · 12 NM (вгору Крка)</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>YOGA</b> на палубі в дзеркальній річковій затоці.</p></div>
+            <div class="sess"><span class="b sail">День</span><p>Захід у нацпарк Крка, прогулянка до водоспадів <b>Скрадінскі бук</b> (стежки-помости).</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Functional</b> на набережній + відновлення <b>МФР</b>.</p></div>
+          </div>
+        </div>
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 3</div><div class="dmove">Скрадін → <b>Каприє</b> · 15 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP-йога</b> у спокійній воді, потім перехід під вітрилами.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Береговий Circuit</b> + інтервальні запливи. Розтяжка на заході.</p></div>
+          </div>
+        </div>
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 4</div><div class="dmove">Каприє → <b>Жирє</b> (Ступіца) · 7 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p>Мобільність + купання, далі <b>трекінг до фортеці Градіна</b> — види на архіпелаг.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Сила (Progress)</b> з гирями/гантелями на березі. Дихання, зорі.</p></div>
+          </div>
+        </div>
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 5</div><div class="dmove">Жирє → <b>Леврнака</b> (Корнати) · 12 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>YOGA</b> на палубі, вхід у нацпарк Корнати.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p>Підйом на хребет Леврнаки + купання на піщаній <b>Лоєні</b>. Розтяжка.</p></div>
+          </div>
+        </div>
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 6</div><div class="dmove">Корнати → <b>Рогозниця</b> · 18 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP + відкрита вода</b>, заплив уздовж берега.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Функціонал</b> + підсумкове коло групи. Прощальний захід сонця.</p></div>
+          </div>
+        </div>
+        <div class="day">
+          <div class="dleft"><div class="dnum">День 7</div><div class="dmove">Рогозниця → <b>Kremik</b> · 8 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Світанок</span><p><b>YOGA</b> на сході сонця, сніданок, повернення на базу й висадка.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="hl"><span>🧘 Йога / SUP-йога</span><span>💪 Functional · Progress</span><span>🏊 Запливи</span><span>🥾 Фортеця Жирє · хребет Корнати</span><span>💦 Водоспади Крки</span></div>
+    </div>
+
+    <!-- ROUTE 2 -->
+    <div class="route-panel" id="r2">
+      <div class="route-head">
+        <div>
+          <span class="pill" style="color:var(--teal)">Відновлення · спокій</span>
+          <h3 style="margin-top:.5em">№2 · «Намасте на воді»</h3>
+          <p class="muted">Маршрут-перезавантаження. Багато SUP-йоги, стретчингу, пілатесу, МФР, дихання й медитацій; повільний темп, найбільше часу на березі та найкоротші переходи. Працюємо з парасимпатикою — знижуємо кортизол, відновлюємо сон. Для тих, хто приходить «видихнути».</p>
+          <div class="route-meta">
+            <div class="m">Рівень<b>Будь-який</b></div>
+            <div class="m">Дистанція<b>~83 NM</b></div>
+            <div class="m">Ночі<b>6</b></div>
+            <div class="m">Акцент<b>Відновлення</b></div>
+          </div>
+        </div>
+        <div class="scene" style="min-height:210px">
+          <svg viewBox="0 0 520 280" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a4a8a"/><stop offset="1" stop-color="#16324a"/></linearGradient></defs><rect width="520" height="280" fill="url(#s2)"/><circle cx="380" cy="78" r="60" fill="#ffd0a8" opacity=".45"/><path d="M0,180 Q130,160 260,178 T520,176 V280 H0Z" fill="#10283a"/><g stroke="#dfe7ff" stroke-width="2" opacity=".5" fill="none"><path d="M60,150 q20,-12 40,0"/><circle cx="80" cy="128" r="9"/></g><polygon points="270,86 270,178 200,178" fill="#efe6f2"/></svg>
+          <span class="tag">SUP-йога · Крка</span>
+          <span class="lbl">Тиша, дихання, відновлення</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">старт</span></div>
+        <div class="leg"><span>12 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Првіч</span><span class="sub">D1</span></div>
+        <div class="leg"><span>10 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Скрадін</span><span class="sub">D2 · Крка</span></div>
+        <div class="leg"><span>12 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Зларін</span><span class="sub">D3</span></div>
+        <div class="leg"><span>10 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Каприє</span><span class="sub">D4</span></div>
+        <div class="leg"><span>14 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Лавса</span><span class="sub">D5 · Корнати</span></div>
+        <div class="leg"><span>16 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D6</span></div>
+        <div class="leg"><span>9 NM</span></div>
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">D7</span></div>
+      </div>
+
+      <div class="days">
+        <div class="day"><div class="dleft"><div class="dnum">День 1</div><div class="dmove">Kremik → <b>Првіч</b> · 12 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b pm">Полудень</span><p>Посадка, м'яке <b>SUP</b>-знайомство у захищеній бухті тихого села.</p></div>
+            <div class="sess"><span class="b am">Захід</span><p><b>Yin-йога + дихання</b> на палубі.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 2</div><div class="dmove">Првіч → <b>Скрадін</b> · 10 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Світанок</span><p><b>YOGA</b> на сході сонця у річковій тиші.</p></div>
+            <div class="sess"><span class="b sail">День</span><p>Нацпарк Крка: повільна прогулянка-«ліс-терапія» вздовж води.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Відновлювальна йога + МФР</b>.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 3</div><div class="dmove">Скрадін → <b>Зларін</b> · 12 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP-йога</b> у дзеркальній воді.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Pilates</b> + купання. <b>Медитація</b> на заході.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 4</div><div class="dmove">Зларін → <b>Каприє</b> · 10 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p>М'яка мобільність + плавання.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Stretching + дихання</b>, спостереження за зорями.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 5</div><div class="dmove">Каприє → <b>Лавса</b> (Корнати) · 14 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>YOGA</b>, перехід у мальовничу бухту Лавса.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Yin + купання</b>. Медитація на заході сонця.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 6</div><div class="dmove">Лавса → <b>Рогозниця</b> · 16 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP-йога</b>, перехід.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p>М'яка мобільність + прогулянка до солоного озера <b>«Зміїне око»</b>. Підсумкове коло.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 7</div><div class="dmove">Рогозниця → <b>Kremik</b> · 9 NM</div></div>
+          <div class="dright"><div class="sess"><span class="b am">Світанок</span><p><b>YOGA</b> на сході, сніданок, висадка.</p></div></div></div>
+      </div>
+      <div class="hl"><span>🧘 SUP-йога · Yin</span><span>🫁 Дихання · медитація</span><span>🌀 МФР · Pilates</span><span>🌲 Крка «ліс-терапія»</span><span>🧂 Зміїне око</span></div>
+    </div>
+
+    <!-- ROUTE 3 -->
+    <div class="route-panel" id="r3">
+      <div class="route-head">
+        <div>
+          <span class="pill" style="color:var(--sun-2)">Активний · HIIT</span>
+          <h3 style="margin-top:.5em">№3 · «Сила і море»</h3>
+          <p class="muted">Для тих, хто приїхав пахати. Високоінтенсивні берегові WOD, спринти на SUP, інтервальні запливи, забіги сходами фортець і хребтами. Більше навантаження, більше поту, більше адреналіну — і та сама розтяжка на заході, щоб відновитись. Рух на південь до Шолти й Трогіра.</p>
+          <div class="route-meta">
+            <div class="m">Рівень<b>Середній+</b></div>
+            <div class="m">Дистанція<b>~77 NM</b></div>
+            <div class="m">Ночі<b>6</b></div>
+            <div class="m">Акцент<b>HIIT / сила</b></div>
+          </div>
+        </div>
+        <div class="scene" style="min-height:210px">
+          <svg viewBox="0 0 520 280" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b5482b"/><stop offset="1" stop-color="#0e3344"/></linearGradient></defs><rect width="520" height="280" fill="url(#s3)"/><circle cx="400" cy="70" r="52" fill="#ffd27a" opacity=".55"/><path d="M0,176 Q130,156 260,174 T520,172 V280 H0Z" fill="#0a2f38"/><g stroke="#ffd9c4" stroke-width="3" opacity=".7"><line x1="70" y1="150" x2="110" y2="150"/><line x1="90" y1="135" x2="90" y2="165"/></g><polygon points="270,80 270,174 200,174" fill="#f3ece0"/></svg>
+          <span class="tag">Шолта · Трогір</span>
+          <span class="lbl">WOD, спринти, забіги</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">старт</span></div>
+        <div class="leg"><span>6 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D1</span></div>
+        <div class="leg"><span>18 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Шолта</span><span class="sub">D2 · Шешула</span></div>
+        <div class="leg"><span>8 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Дрвеник</span><span class="sub">D3 · Krknjaši</span></div>
+        <div class="leg"><span>6 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Трогір</span><span class="sub">D4</span></div>
+        <div class="leg"><span>15 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Шолта</span><span class="sub">D5 · Стоморська</span></div>
+        <div class="leg"><span>18 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D6</span></div>
+        <div class="leg"><span>6 NM</span></div>
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">D7</span></div>
+      </div>
+
+      <div class="days">
+        <div class="day"><div class="dleft"><div class="dnum">День 1</div><div class="dmove">Kremik → <b>Рогозниця</b> · 6 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b pm">Полудень</span><p>Посадка, короткий перехід. <b>Береговий WOD (Planet X)</b> на розгін тижня.</p></div>
+            <div class="sess"><span class="b am">Захід</span><p><b>Розтяжка</b> й мобілізація після інтенсиву.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 2</div><div class="dmove">Рогозниця → <b>Шолта</b> (Шешула) · 18 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Functional</b> на палубі, потім довший перехід під вітрилами.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Tae-bo</b> з лапами + спринт-запливи. МФР.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 3</div><div class="dmove">Шолта → <b>Дрвеник</b> (Krknjaši, «Блакитна лагуна») · 8 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Інтервальні спринти на SUP</b> у бірюзовій лагуні.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Circuit</b> на пляжі + сноркелінг. Розтяжка.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 4</div><div class="dmove">Дрвеник → <b>Трогір</b> · 6 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Iron Man HIIT</b> + забіги сходами фортеці <b>Камерленго</b>, місто UNESCO.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Сила</b> з гирями. Дихання на заході.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 5</div><div class="dmove">Трогір → <b>Шолта</b> (Стоморська) · 15 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Functional</b> + запливи.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Planet X HIIT</b>. Розтяжка на заході.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 6</div><div class="dmove">Шолта → <b>Рогозниця</b> · 18 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Забіг трейлом</b> на пагорб над бухтою.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Circuit</b> + підсумкове коло. Захід сонця.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 7</div><div class="dmove">Рогозниця → <b>Kremik</b> · 6 NM</div></div>
+          <div class="dright"><div class="sess"><span class="b am">Світанок</span><p><b>SUP + холодний заплив</b>, сніданок, висадка.</p></div></div></div>
+      </div>
+      <div class="hl"><span>🔥 Planet X · Iron Man</span><span>🥊 Tae-bo</span><span>🏃 Забіги фортецями</span><span>🏄 SUP-спринти</span><span>🏊 Інтервальні запливи</span></div>
+    </div>
+
+    <!-- ROUTE 4 -->
+    <div class="route-panel" id="r4">
+      <div class="route-head">
+        <div>
+          <span class="pill" style="color:#ff8d6b">Експедиція · пригода</span>
+          <h3 style="margin-top:.5em">№4 · «Південний вітер»</h3>
+          <p class="muted">Найамбітніший маршрут — на південь, до Шолти, Пакленських островів, Віса й Брача. Довші переходи, відкрита вода, драматичні бухти-каньйони, сноркелінг і відчуття справжньої експедиції. Менше «залізних» занять, більше моря й досліджень. Сильно залежить від погоди — капітан веде під стабільне вікно.</p>
+          <div class="route-meta">
+            <div class="m">Рівень<b>Впевнений</b></div>
+            <div class="m">Дистанція<b>~107 NM</b></div>
+            <div class="m">Ночі<b>6</b></div>
+            <div class="m">Акцент<b>Пригода</b></div>
+          </div>
+        </div>
+        <div class="scene" style="min-height:210px">
+          <svg viewBox="0 0 520 280" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#143f6b"/><stop offset="1" stop-color="#07202e"/></linearGradient></defs><rect width="520" height="280" fill="url(#s4)"/><circle cx="420" cy="64" r="44" fill="#ffd27a" opacity=".5"/><path d="M150,120 L150,180 L120,200 L40,200 L20,150 Z" fill="#0a2b38"/><path d="M360,130 L500,130 L500,200 L340,200 Z" fill="#0a2b38"/><path d="M0,200 Q130,182 260,198 T520,196 V280 H0Z" fill="#08222e"/><polygon points="260,86 260,180 195,180" fill="#f3ece0"/></svg>
+          <span class="tag">Віс · Пакленські</span>
+          <span class="lbl">Каньйони-бухти, відкрите море</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">старт</span></div>
+        <div class="leg"><span>6 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D1</span></div>
+        <div class="leg"><span>18 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Маслиниця</span><span class="sub">D2 · Шолта</span></div>
+        <div class="leg"><span>16 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Пакленські</span><span class="sub">D3 · Palmižana</span></div>
+        <div class="leg"><span>15 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Віс</span><span class="sub">D4 · Коміжа</span></div>
+        <div class="leg"><span>24 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Мілна</span><span class="sub">D5 · Брач</span></div>
+        <div class="leg"><span>22 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D6</span></div>
+        <div class="leg"><span>6 NM</span></div>
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">D7</span></div>
+      </div>
+
+      <div class="days">
+        <div class="day"><div class="dleft"><div class="dnum">День 1</div><div class="dmove">Kremik → <b>Рогозниця</b> · 6 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b pm">Полудень</span><p>Посадка, перехід. <b>SUP + купання</b>, перевірка спорядження.</p></div>
+            <div class="sess"><span class="b am">Захід</span><p><b>Functional</b> на березі + розтяжка.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 2</div><div class="dmove">Рогозниця → <b>Маслиниця</b> (Шолта) · 18 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p>Мобільність, довгий перехід під вітрилами.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Береговий функціонал</b> + сноркелінг біля палацу-марини. Розтяжка.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 3</div><div class="dmove">Шолта → <b>Пакленські</b> (Palmižana) · 16 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP-йога</b>, перехід до соснових Пакленських островів.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Circuit</b> на пляжі + сноркелінг. Дихання на заході.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 4</div><div class="dmove">Пакленські → <b>Віс</b> (Коміжа) · 15 NM <span class="muted">(за погодою)</span></div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>YOGA</b>, перехід до найдальшого острова. Рибальська Коміжа.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p>Похід до бухти-каньйону <b>Стініва</b> (100-метрові скелі) + купання.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 5</div><div class="dmove">Віс → <b>Мілна</b> (Брач) · 24 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Купання + SUP</b>, далі перехід.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Сила</b> у захищеній гавані Мілни. Розтяжка.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 6</div><div class="dmove">Мілна → <b>Рогозниця</b> · 22 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Functional</b>, перехід-повернення з купанням.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p>Підсумкове коло + розтяжка на заході.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 7</div><div class="dmove">Рогозниця → <b>Kremik</b> · 6 NM</div></div>
+          <div class="dright"><div class="sess"><span class="b am">Світанок</span><p><b>YOGA</b> на сході, сніданок, висадка.</p></div></div></div>
+      </div>
+      <div class="note" style="margin-top:14px">🧭 <b>Опція за стабільної погоди:</b> від Віса — ранковий вихід до <b>Блакитної печери Біševo (Modra špilja)</b>. Якщо тягне юго чи бура — капітан скорочує південне коліно й тримає групу в районі Шолта–Брач.</div>
+      <div class="hl"><span>🧗 Стініва · каньйон-бухта</span><span>🐠 Сноркелінг</span><span>🏝 Пакленські острови</span><span>🌊 Відкриті переходи</span><span>🕳 Блакитна печера (опція)</span></div>
+    </div>
+
+    <!-- ROUTE 5 -->
+    <div class="route-panel" id="r5">
+      <div class="route-head">
+        <div>
+          <span class="pill" style="color:var(--teal)">Спільнота · усі рівні</span>
+          <h3 style="margin-top:.5em">№5 · «Сімейний бриз»</h3>
+          <p class="muted">Найлегший і найтепліший маршрут: пари, друзі, змішані рівні. Короткі переходи, більше міст і людей, танці (Zumba, DanceX), ігри на пляжі, SUP-розваги, спільні вечері. Тренування є щодня, але м'якші — головне тут атмосфера й спільнота. Шибенський архіпелаг і Крка.</p>
+          <div class="route-meta">
+            <div class="m">Рівень<b>Усі / пари</b></div>
+            <div class="m">Дистанція<b>~67 NM</b></div>
+            <div class="m">Ночі<b>6</b></div>
+            <div class="m">Акцент<b>Спільнота</b></div>
+          </div>
+        </div>
+        <div class="scene" style="min-height:210px">
+          <svg viewBox="0 0 520 280" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f8f86"/><stop offset="1" stop-color="#0c3a44"/></linearGradient></defs><rect width="520" height="280" fill="url(#s5)"/><circle cx="400" cy="74" r="50" fill="#ffe0a8" opacity=".55"/><path d="M0,178 Q130,158 260,176 T520,174 V280 H0Z" fill="#0a2f38"/><g fill="#ffd9b8" opacity=".85"><circle cx="80" cy="150" r="7"/><circle cx="110" cy="150" r="7"/><rect x="76" y="156" width="8" height="20"/><rect x="106" y="156" width="8" height="20"/></g><polygon points="270,84 270,176 205,176" fill="#f3ece0"/></svg>
+          <span class="tag">Зларін · Першт</span>
+          <span class="lbl">Танці, ігри, тепла компанія</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">старт</span></div>
+        <div class="leg"><span>10 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Зларін</span><span class="sub">D1</span></div>
+        <div class="leg"><span>12 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Скрадін</span><span class="sub">D2 · Крка</span></div>
+        <div class="leg"><span>12 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Првіч</span><span class="sub">D3</span></div>
+        <div class="leg"><span>8 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Каприє</span><span class="sub">D4</span></div>
+        <div class="leg"><span>16 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Рогозниця</span><span class="sub">D5</span></div>
+        <div class="leg"><span>6 NM</span></div>
+        <div class="stop"><span class="dot"></span><span class="nm">Primošten</span><span class="sub">D6</span></div>
+        <div class="leg"><span>3 NM</span></div>
+        <div class="stop home"><span class="dot"></span><span class="nm">Kremik</span><span class="sub">D7</span></div>
+      </div>
+
+      <div class="days">
+        <div class="day"><div class="dleft"><div class="dnum">День 1</div><div class="dmove">Kremik → <b>Зларін</b> · 10 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b pm">Полудень</span><p>Посадка, <b>SUP-розваги</b> й купання на «кораловому острові».</p></div>
+            <div class="sess"><span class="b am">Захід</span><p>Легкий <b>DanceX</b> на палубі — розігрів настрою.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 2</div><div class="dmove">Зларін → <b>Скрадін</b> · 12 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>Сімейна йога</b> на палубі.</p></div>
+            <div class="sess"><span class="b sail">День</span><p>Водоспади <b>Крки</b> — прогулянка, фото, спільний обід.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p>Легкий <b>функціонал + ігри</b> на воді. Розтяжка.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 3</div><div class="dmove">Скрадін → <b>Првіч</b> · 12 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP-йога</b> для всіх.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Zumba</b> на пляжі + купання. Дихання на заході.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 4</div><div class="dmove">Првіч → <b>Каприє</b> · 8 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p>Мобільність + плавання.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Circuit-lite</b> + сноркелінг. Вечір у родинній конобі.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 5</div><div class="dmove">Каприє → <b>Рогозниця</b> · 16 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>SUP</b> + перехід.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>ABT / BodyTone</b> + прогулянка до озера «Зміїне око». Розтяжка.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 6</div><div class="dmove">Рогозниця → <b>Primošten</b> · 6 NM</div></div>
+          <div class="dright">
+            <div class="sess"><span class="b am">Ранок</span><p><b>YOGA</b>, старе місто Примоштен і пляж.</p></div>
+            <div class="sess"><span class="b pm">Надвечір</span><p><b>Функціонал + прощальна вечірка</b>. Захід сонця.</p></div>
+          </div></div>
+        <div class="day"><div class="dleft"><div class="dnum">День 7</div><div class="dmove">Primošten → <b>Kremik</b> · 3 NM</div></div>
+          <div class="dright"><div class="sess"><span class="b am">Світанок</span><p>Легка <b>розтяжка</b> на сході, сніданок, висадка.</p></div></div></div>
+      </div>
+      <div class="hl"><span>💃 Zumba · DanceX</span><span>🤸 Сімейна йога</span><span>🏄 SUP-розваги</span><span>💦 Водоспади Крки</span><span>🎉 Спільні вечері</span></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="wrap">
+    <span class="eyebrow">Команда на борту</span>
+    <h2>Двоє ведуть тиждень</h2>
+    <div class="grid g3" style="margin-top:22px">
+      <div class="card pad-lg">
+        <div class="ic">🧭</div>
+        <h3>Капітан (Under the Heavens)</h3>
+        <p class="muted">Навігація, безпека, погода й вибір стоянок. Веде яхту, ставить на якір, проводить ранкові брифінги. Останнє слово щодо маршруту — завжди за ним.</p>
+      </div>
+      <div class="card pad-lg">
+        <div class="ic">💪</div>
+        <h3>Тренер Apollo Next</h3>
+        <p class="muted">Лідер аутдор-подій клубу. Складає й проводить два заняття на день, адаптує навантаження під групу, веде SUP-йогу й відповідає за безпеку у воді та енергію спільноти.</p>
+      </div>
+      <div class="card pad-lg">
+        <div class="ic">🍋</div>
+        <h3>Хост / кок <span class="muted" style="font-size:13px">(опція)</span></h3>
+        <p class="muted">Камбуз і збалансоване меню під тренування. За потреби — здорове харчування від екосистеми Fozzy Group (Silpo). Турбота про побут, щоб група думала лише про море й рух.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INCLUDED / SAFETY -->
+<section id="included" class="section-tint">
+  <div class="wrap">
+    <span class="eyebrow">Що входить · безпека</span>
+    <h2>Деталі, які вирішують</h2>
+    <div class="grid g2" style="margin-top:22px">
+      <div class="card pad-lg">
+        <h3>✓ Входить</h3>
+        <p class="muted" style="margin:0">Яхта 46–52 фути з капітаном · 6 ночей у каютах на двох · два тренування на день із тренером Apollo · інвентар для занять · SUP-дошки й маски · постіль і рушники · маршрутне планування й підтримка партнера. <br><span style="color:#dff1f1">Окремо:</span> переліт до Спліта, трансфер, харчування/провізія, нацпаркові збори (Корнати, Крка), особиста страховка.</p>
+      </div>
+      <div class="card pad-lg">
+        <h3>🛟 Безпека й комфорт</h3>
+        <p class="muted" style="margin:0">Рятувальні жилети й страхувальні лінії · інструктаж із безпеки у воді перед першим заняттям · навантаження масштабується під рівень · аптечка на борту · постійний зв'язок і Wi-Fi · прогноз і план «Б» на кожен день. Заняття у воді — лише з дозволу капітана й за погодою.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:18px">💶 <b>Орієнтовно:</b> оренда яхти — €2&nbsp;000–7&nbsp;000/тиждень залежно від моделі та дати (кінець сезону — нижчий тариф, є ранні знижки до 30%). Ціну на гостя рахуємо під розмір групи й конфігурацію (1 чи 2 борти).</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="card pad-lg" style="background:linear-gradient(120deg,rgba(255,106,61,.16),rgba(31,199,182,.10));border-color:rgba(255,172,58,.3)">
+      <span class="eyebrow">Забронювати місце</span>
+      <h2 style="margin-top:.2em">Збираємо групу — приєднуйся</h2>
+      <p class="lead" style="max-width:760px">Тиждень купуємо заздалегідь, місця обмежені розміром яхти. Напиши, який маршрут і дата цікавлять — підберемо борт і зберемо твою зграю.</p>
+      <div class="grid g2" style="margin-top:14px">
+        <div class="card">
+          <h3 style="font-size:19px">Apollo Next</h3>
+          <p class="muted" style="margin:0">Події та аутдор: <a href="https://apollo.online/events/">apollo.online/events</a><br>Групові програми: <a href="https://apollo.online/group-program/">apollo.online/group-program</a><br>Telegram: <a href="https://t.me/APOLLO_Help_bot">@APOLLO_Help_bot</a></p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:19px">Under the Heavens · яхти</h3>
+          <p class="muted" style="margin:0">Marina Kremik, Splitska 24, Primošten<br>Anita Pean Serdarević · <a href="tel:+385913300699">+385 (0)91 3300 699</a><br><a href="https://undertheheavens.sale/">undertheheavens.sale</a></p>
+        </div>
+      </div>
+      <div class="btns" style="margin-top:18px">
+        <a class="btn btn-primary" href="https://apollo.online/events/">Хочу в подорож →</a>
+        <a class="btn btn-ghost" href="#routes">Ще раз маршрути</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="margin-bottom:10px"><span class="logo">A</span><span>APOLLO&nbsp;NEXT<small>Sail &amp; Train · Croatia</small></span></div>
+        <p class="muted" style="font-size:14px">Тренувальні яхтенні подорожі узбережжям Хорватії. Концепт спільно з партнером Under the Heavens: яхта, тренер Apollo, капітан, острови Далмації та два тренування на день.</p>
+      </div>
+      <div>
+        <h4 style="font-size:15px">Розділи</h4>
+        <p class="muted" style="font-size:14px;line-height:2">
+          <a href="#concept">Концепція</a><br><a href="#day">День у морі</a><br><a href="#yacht">Яхта</a><br><a href="#weather">Погода</a><br><a href="#map">Карта</a><br><a href="#routes">Маршрути</a>
+        </p>
+      </div>
+      <div>
+        <h4 style="font-size:15px">Маршрути</h4>
+        <p class="muted" style="font-size:14px;line-height:2">
+          <a href="#routes" data-go="r1">1 · Корнатський баланс</a><br>
+          <a href="#routes" data-go="r2">2 · Намасте на воді</a><br>
+          <a href="#routes" data-go="r3">3 · Сила і море</a><br>
+          <a href="#routes" data-go="r4">4 · Південний вітер</a><br>
+          <a href="#routes" data-go="r5">5 · Сімейний бриз</a>
+        </p>
+      </div>
+    </div>
+    <p class="eco">Частина екосистеми <b>Fozzy Group</b> — 4-ї найбільшої компанії України. · Концепт-сайт, червень 2026. Інтерактивна мапа — © OpenStreetMap. Фото яхт — Under the Heavens, undertheheavens.sale.</p>
+  </div>
+</footer>
+
+<script>
+  document.body.classList.remove('no-js');
+  // mobile nav close on link click
+  document.querySelectorAll('#navlinks a').forEach(function(a){
+    a.addEventListener('click',function(){document.getElementById('navlinks').classList.remove('open');});
+  });
+  // route tabs
+  var tabs=document.querySelectorAll('.rtab');
+  function showRoute(id){
+    document.querySelectorAll('.route-panel').forEach(function(p){p.classList.toggle('active',p.id===id);});
+    tabs.forEach(function(t){t.classList.toggle('active',t.getAttribute('data-route')===id);});
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){showRoute(t.getAttribute('data-route'));});});
+  // footer route links
+  document.querySelectorAll('[data-go]').forEach(function(a){
+    a.addEventListener('click',function(){showRoute(a.getAttribute('data-go'));});
+  });
+</script>
+<script>
+window.addEventListener('load', function(){
+  var live=document.getElementById('livemap'), fb=document.getElementById('mapFallback');
+  if(!window.L || !live){ if(live) live.style.display='none'; if(fb) fb.style.display='block'; return; }
+  var P={
+    kremik:[43.5836,15.9258], primosten:[43.5872,15.9290], zlarin:[43.7006,15.8497],
+    prvic:[43.7258,15.7967], skradin:[43.8169,15.9219], kaprije:[43.6856,15.7081],
+    zirje:[43.6520,15.6690], levrnaka:[43.8919,15.6210], lavsa:[43.8470,15.5140],
+    rogoznica:[43.5286,15.9669], maslinica:[43.3969,16.2089], sesula:[43.3940,16.2150],
+    stomorska:[43.3880,16.3000], krknjasi:[43.4505,16.1320], trogir:[43.5150,16.2517],
+    milna:[43.3267,16.4486], palmizana:[43.1650,16.4000], komiza:[43.0447,16.0917]
+  };
+  var names={kremik:'Marina Kremik · база',primosten:'Primošten',zlarin:'Зларін',prvic:'Првіч',skradin:'Скрадін · Крка',kaprije:'Каприє',zirje:'Жирє',levrnaka:'Леврнака · Корнати',lavsa:'Лавса · Корнати',rogoznica:'Рогозниця',maslinica:'Маслиниця · Шолта',sesula:'Шешула · Шолта',stomorska:'Стоморська · Шолта',krknjasi:'Дрвеник · Krknjaši',trogir:'Трогір',milna:'Мілна · Брач',palmizana:'Пакленські · Palmižana',komiza:'Віс · Коміжа'};
+  var routes={
+    r1:['kremik','zlarin','skradin','kaprije','zirje','levrnaka','rogoznica','kremik'],
+    r2:['kremik','prvic','skradin','zlarin','kaprije','lavsa','rogoznica','kremik'],
+    r3:['kremik','rogoznica','sesula','krknjasi','trogir','stomorska','rogoznica','kremik'],
+    r4:['kremik','rogoznica','maslinica','palmizana','komiza','milna','rogoznica','kremik'],
+    r5:['kremik','zlarin','skradin','prvic','kaprije','rogoznica','primosten','kremik']
+  };
+  var map=L.map('livemap',{scrollWheelZoom:false}).setView([43.5,15.95],8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
+  var used={}; Object.keys(routes).forEach(function(k){routes[k].forEach(function(p){used[p]=1;});});
+  Object.keys(used).forEach(function(p){
+    if(!P[p])return; var home=(p==='kremik');
+    L.circleMarker(P[p],{radius:home?9:6,weight:2,color:'#06161f',fillColor:home?'#1fc7b6':'#ff8a5c',fillOpacity:1}).addTo(map).bindPopup('<b>'+(names[p]||p)+'</b>');
+  });
+  var line=null;
+  function draw(rk){
+    if(!routes[rk])return;
+    if(line) map.removeLayer(line);
+    var pts=routes[rk].map(function(p){return P[p];});
+    line=L.polyline(pts,{color:'#ff6a3d',weight:4,opacity:.95}).addTo(map);
+    try{ map.fitBounds(line.getBounds().pad(0.25)); }catch(e){}
+    document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-mroute')===rk);});
+  }
+  document.querySelectorAll('.mbtn').forEach(function(b){b.addEventListener('click',function(){draw(b.getAttribute('data-mroute'));});});
+  draw('r1');
+});
+</script>
+</body>
+</html>
