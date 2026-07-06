@@ -227,7 +227,79 @@
     section{padding:58px 0}
     .foot-grid{grid-template-columns:1fr}
   }
+
+  /* ===== theme tokens (extra) ===== */
+  :root{--field-bg:rgba(0,0,0,.4);--nav-bg:rgba(0,0,0,.78);--menu-bg:rgba(0,0,0,.98)}
+  header.nav{background:var(--nav-bg)}
+  @media(max-width:980px){.nav-links{background:var(--menu-bg)}}
+
+  /* ===== LIGHT THEME ===== */
+  :root[data-theme="light"]{
+    --night:#f4f3f0; --sea:#ffffff; --sea-2:#f6f5f2; --sea-3:#eeece7;
+    --foam:#141210; --muted:#6b6862; --dim:#403c36;
+    --line:rgba(20,16,12,.14); --card:rgba(20,16,12,.035); --card-2:rgba(20,16,12,.06);
+    --field-bg:rgba(20,16,12,.05); --nav-bg:rgba(255,255,255,.82); --menu-bg:rgba(255,255,255,.98);
+    --shadow:0 18px 50px rgba(20,16,12,.14);
+  }
+  [data-theme="light"] .nav-links a{color:#413d37}
+  [data-theme="light"] .nav-links a:hover{color:#000;background:var(--card-2)}
+  [data-theme="light"] .chip{color:#2a2724}
+  [data-theme="light"] .btn-ghost{color:var(--ink)}
+  [data-theme="light"] .flow .step p{color:#4a463f}
+  [data-theme="light"] .rtab{color:#2a2724}
+  [data-theme="light"] .sess p{color:#2a2724}
+  [data-theme="light"] .sess p b{color:#000}
+  [data-theme="light"] .b.sail{background:rgba(20,16,12,.06);color:#3d3a34}
+  [data-theme="light"] .day .dmove{color:#4a463f}
+  [data-theme="light"] .map-legend{color:#4a463f}
+  [data-theme="light"] .map-actions a{color:#2a2724}
+  [data-theme="light"] .map-actions a:hover{color:#000}
+  [data-theme="light"] .mbtn{color:#2a2724}
+  [data-theme="light"] footer{background:linear-gradient(180deg,transparent,rgba(20,16,12,.05))}
+  [data-theme="light"] .section-tint{background:linear-gradient(180deg,rgba(20,16,12,.03),transparent)}
+  [data-theme="light"] #livemap{background:#e9e7e2}
+  [data-theme="light"] .map-embed iframe{background:#e9e7e2}
+
+  /* ===== theme toggle button ===== */
+  .theme-btn{margin-left:8px;background:var(--card-2);border:1px solid var(--line);color:var(--foam);width:40px;height:40px;border-radius:10px;font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.15s;flex:0 0 auto}
+  .theme-btn:hover{border-color:var(--sun-2)}
+
+  /* ===== booking (in-flow) ===== */
+  .bkgrid{display:grid;grid-template-columns:1.35fr .9fr;gap:22px;align-items:start}
+  .pillrow{display:flex;flex-wrap:wrap;gap:8px}
+  .bpill{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--dim);border-radius:999px;padding:9px 14px;font-weight:700;font-size:13.5px;font-family:var(--font-display);transition:.15s}
+  .bpill:hover{border-color:var(--sun-2)}
+  .bpill.active{background:linear-gradient(135deg,var(--sun),var(--sun-2));color:#fff;border-color:transparent}
+  .deck{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+  .cabin{cursor:pointer;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--foam);border-radius:14px;padding:14px 16px;transition:.15s;font-family:var(--font-display);display:flex;flex-direction:column;gap:4px}
+  .cabin:hover{border-color:var(--sun-2)}
+  .cabin.active{border-color:var(--sun);background:linear-gradient(135deg,rgba(255,100,36,.18),rgba(0,79,232,.10));box-shadow:inset 0 0 0 1px var(--sun)}
+  .cabin .ct{font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
+  .cabin .cs{font-size:12px;color:var(--muted);font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+  .cabin .cdot{width:10px;height:10px;border-radius:50%;background:var(--sun)}
+  .crew{margin-top:12px;font-size:13.5px;color:var(--dim);border:1px dashed var(--line);border-radius:12px;padding:11px 13px}
+  .pricecard{position:sticky;top:78px}
+  .pricebig{font-family:var(--font-display);font-weight:800;font-size:46px;letter-spacing:-.02em;margin:.15em 0 2px;display:flex;align-items:baseline;gap:9px}
+  .pricebig small{font-size:15px;color:var(--muted);font-weight:400}
+  .prow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+  .prow span{color:var(--dim)}
+  .prow b{font-family:var(--font-mono);white-space:nowrap}
+  .prow.total{border-top:2px solid var(--sun);margin-top:5px}
+  .prow.total span{color:var(--foam);font-weight:700}
+  .prow.total b{color:var(--sun);font-size:17px}
+  .selbar{margin-top:13px;font-size:12.5px;font-family:var(--font-mono);color:var(--dim);letter-spacing:.03em}
+  .ptable{width:100%;border-collapse:collapse;font-size:14px}
+  .ptable td{padding:9px 6px;border-bottom:1px solid var(--line);color:var(--dim)}
+  .ptable td:last-child{text-align:right;font-family:var(--font-mono);white-space:nowrap;color:var(--foam)}
+  .ptable tr:last-child td{border-bottom:none;font-weight:800;color:var(--sun)}
+  .fform label{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em}
+  .fform label.full{grid-column:1/-1}
+  .fform input,.fform textarea{background:var(--field-bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:var(--foam);font:400 15px/1.4 var(--font-display)}
+  .fform input:focus,.fform textarea:focus{outline:none;border-color:var(--sun)}
+  #summaryOut{grid-column:1/-1;background:var(--field-bg);font-family:var(--font-mono);font-size:12.5px;line-height:1.7;color:var(--dim);resize:vertical}
+  @media(max-width:880px){.bkgrid{grid-template-columns:1fr}.pricecard{position:static}}
 </style>
+<script>(function(){try{var t=localStorage.getItem("apollo-theme");if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();</script>
 </head>
 <body class="no-js">
 
@@ -247,9 +319,9 @@
       <a href="#map">Карта</a>
       <a href="#routes">Маршрути</a>
       <a href="#team">Команда</a>
-      <a href="booking.html">Бронювання</a>
-      <a class="nav-cta" href="booking.html">Забронювати</a>
+      <a class="nav-cta" href="#booking">Забронювати</a>
     </nav>
+    <button class="theme-btn" id="themeToggle" type="button" aria-label="Перемкнути тему" title="Світла / темна тема">☀️</button>
   </div>
 </header>
 
@@ -1035,26 +1107,110 @@
 <div class="divider"></div>
 
 <!-- CONTACT -->
-<section id="contact">
+<a id="contact"></a>
+<section id="booking">
   <div class="wrap">
-    <div class="card pad-lg" style="background:linear-gradient(120deg,rgba(255,100,36,.16),rgba(0,79,232,.10));border-color:rgba(255,122,67,.3)">
-      <span class="eyebrow">Забронювати місце</span>
-      <h2 style="margin-top:.2em">Збираємо групу — приєднуйся</h2>
-      <p class="lead" style="max-width:760px">Тиждень купуємо заздалегідь, місця обмежені розміром яхти. Напиши, який маршрут і дата цікавлять — підберемо борт і зберемо твою зграю.</p>
-      <div class="grid g2" style="margin-top:14px">
-        <div class="card">
-          <h3 style="font-size:19px">Apollo Next</h3>
-          <p class="muted" style="margin:0">Події та аутдор: <a href="https://apollo.online/events/">apollo.online/events</a><br>Групові програми: <a href="https://apollo.online/group-program/">apollo.online/group-program</a><br>Telegram: <a href="https://t.me/APOLLO_Help_bot">@APOLLO_Help_bot</a></p>
+    <span class="eyebrow">Бронювання</span>
+    <h2 style="margin-top:.2em">Обери каюту — і зберемо твою зграю</h2>
+    <p class="lead" style="max-width:820px">Яхта — це <b>4 каюти для пар</b> (по 2 місця) плюс службова каюта капітана і стюардеси. Каюта бронюється парою. Обери маршрут, тиждень і каюту — розрахунок оновлюється наживо.</p>
+
+    <div class="bkgrid" style="margin-top:22px">
+      <div>
+        <div class="card pad-lg">
+          <span class="eyebrow">Крок 1 · Маршрут</span>
+          <div class="pillrow" id="routePills" style="margin-top:12px">
+            <button class="bpill active" data-r="r1" type="button">1 · Корнатський баланс</button>
+            <button class="bpill" data-r="r2" type="button">2 · Намасте на воді</button>
+            <button class="bpill" data-r="r3" type="button">3 · Сила і море</button>
+            <button class="bpill" data-r="r4" type="button">4 · Південний вітер</button>
+            <button class="bpill" data-r="r5" type="button">5 · Сімейний бриз</button>
+          </div>
+          <div style="margin-top:20px">
+            <span class="eyebrow">Крок 2 · Тиждень</span>
+            <div class="pillrow" id="datePills" style="margin-top:12px">
+              <button class="bpill active" data-d="19–25 вересня 2026" type="button">19–25 вер</button>
+              <button class="bpill" data-d="26 вересня – 2 жовтня 2026" type="button">26 вер – 2 жов</button>
+              <button class="bpill" data-d="3–9 жовтня 2026" type="button">3–9 жов</button>
+              <button class="bpill" data-d="10–16 жовтня 2026" type="button">10–16 жов</button>
+              <button class="bpill" data-d="17–23 жовтня 2026" type="button">17–23 жов</button>
+            </div>
+          </div>
         </div>
-        <div class="card">
-          <h3 style="font-size:19px">Under the Heavens · яхти</h3>
-          <p class="muted" style="margin:0">Marina Kremik, Splitska 24, Primošten<br>Anita Pean Serdarević · <a href="tel:+385913300699">+385 (0)91 3300 699</a><br><a href="https://undertheheavens.sale/">undertheheavens.sale</a></p>
+
+        <div class="card pad-lg" style="margin-top:18px">
+          <span class="eyebrow">Крок 3 · Каюта</span>
+          <p class="muted" style="margin:.6em 0 0">Обери одну з чотирьох гостьових кают. Кожна — 2 місця, бронюється парою.</p>
+          <div class="deck" id="cabinGrid">
+            <button class="cabin" data-c="A" type="button"><span class="ct"><span class="cdot"></span>Каюта A</span><span class="cs">2 місця · пара · €4 000</span></button>
+            <button class="cabin" data-c="B" type="button"><span class="ct"><span class="cdot"></span>Каюта B</span><span class="cs">2 місця · пара · €4 000</span></button>
+            <button class="cabin" data-c="C" type="button"><span class="ct"><span class="cdot"></span>Каюта C</span><span class="cs">2 місця · пара · €4 000</span></button>
+            <button class="cabin" data-c="D" type="button"><span class="ct"><span class="cdot"></span>Каюта D</span><span class="cs">2 місця · пара · €4 000</span></button>
+          </div>
+          <div class="crew">🧭 Капітан + 🍋 стюардеса живуть в окремій службовій каюті. Їхня вартість розкладається порівну на 4 гостьові каюти.</div>
         </div>
       </div>
-      <div class="btns" style="margin-top:18px">
-        <a class="btn btn-primary" href="booking.html">Забронювати каюту →</a>
-        <a class="btn btn-ghost" href="https://apollo.online/events/">Хочу в подорож</a>
-        <a class="btn btn-ghost" href="#routes">Ще раз маршрути</a>
+
+      <aside class="card pad-lg pricecard">
+        <span class="eyebrow">Ваш розрахунок</span>
+        <div class="pricebig"><span id="perPerson">€2 000</span><small>/ особа</small></div>
+        <div class="muted" id="cabinLine" style="font-size:14px">Каюта (2 особи) — €4 000</div>
+        <div style="margin-top:14px">
+          <div class="prow"><span>Місце · 2 × €1&nbsp;500</span><b>€3 000</b></div>
+          <div class="prow"><span>Капітан · €2&nbsp;500 ÷ 4</span><b>€625</b></div>
+          <div class="prow"><span>Стюардеса · €1&nbsp;500 ÷ 4</span><b>€375</b></div>
+          <div class="prow total"><span>Разом за каюту</span><b>€4 000</b></div>
+        </div>
+        <div class="selbar" id="selSummary">№1 · Корнатський баланс · 19–25 вер · каюта —</div>
+        <p class="muted" style="font-size:12px;margin:12px 0 0">Ціна — за каюту на тиждень (6 ночей), включно з часткою команди. Не входить: переліт, трансфер, харчування, нацпаркові збори, страховка.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section-tint">
+  <div class="wrap">
+    <span class="eyebrow">Як формується ціна</span>
+    <h2 style="margin-top:.2em">Прозоро, до останнього євро</h2>
+    <div class="grid g2" style="margin-top:14px;align-items:start">
+      <div>
+        <p>Вартість тижня — це <b>місця гостей</b> і <b>команда</b> (капітан + стюардеса). Місце коштує €1&nbsp;500 з особи. Каюта — це завжди пара, тож базово каюта = 2 × €1&nbsp;500 = <b>€3&nbsp;000</b>.</p>
+        <p>Команда працює на всю яхту, тож її вартість ділиться порівну між чотирма каютами. Капітан — €2&nbsp;500 ÷ 4 = <b>€625</b> на каюту. Стюардеса — €1&nbsp;500 ÷ 4 = <b>€375</b>. Разом команда додає €1&nbsp;000 до каюти — по €500 на особу.</p>
+        <p><b>Підсумок:</b> €2&nbsp;000 з особи · €4&nbsp;000 за каюту. Повна яхта (4 каюти, 8 гостей) = €16&nbsp;000, із яких €4&nbsp;000 — команда.</p>
+      </div>
+      <div class="card">
+        <table class="ptable">
+          <tr><td>Місце гостя · 1 особа</td><td>€1 500</td></tr>
+          <tr><td>Каюта · 2 місця (пара)</td><td>€3 000</td></tr>
+          <tr><td>Капітан · €2 500 ÷ 4 каюти</td><td>+ €625</td></tr>
+          <tr><td>Стюардеса · €1 500 ÷ 4 каюти</td><td>+ €375</td></tr>
+          <tr><td>Разом за каюту · на особу €2 000</td><td>€4 000</td></tr>
+        </table>
+        <p class="muted" style="font-size:13px;margin-top:12px">Концептуальний розрахунок. Точна сума на гостя залежить від моделі яхти та дати.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="request">
+  <div class="wrap">
+    <div class="card pad-lg" style="background:linear-gradient(120deg,rgba(255,100,36,.16),rgba(0,79,232,.10));border-color:rgba(255,122,67,.3)">
+      <span class="eyebrow">Заявка</span>
+      <h2 style="margin-top:.2em">Майже готово</h2>
+      <p class="lead" style="max-width:760px">Заповни поля — і натисни «Відправити заявку». Ми зберемо групу під обраний маршрут і тиждень.</p>
+      <div class="grid g2 fform" style="margin-top:8px">
+        <label>Ім'я гостя 1<input id="n1" placeholder="Ім'я та прізвище"></label>
+        <label>Ім'я гостя 2<input id="n2" placeholder="Ім'я та прізвище"></label>
+        <label>Email<input id="em" type="email" placeholder="you@email.com"></label>
+        <label>Телефон / Telegram<input id="ph" placeholder="+380… або @nick"></label>
+        <label class="full">Побажання (необовʼязково)<textarea id="note" rows="2" placeholder="Дієта, рівень підготовки, побажання по каюті…"></textarea></label>
+        <textarea id="summaryOut" rows="7" readonly></textarea>
+      </div>
+      <div class="btns" style="margin-top:16px">
+        <button class="btn btn-primary" id="sendReq" type="button">Відправити заявку</button>
       </div>
     </div>
   </div>
@@ -1066,11 +1222,12 @@
       <div>
         <div class="brand" style="margin-bottom:10px"><span class="logo">A</span><span>APOLLO&nbsp;NEXT<small>Sail &amp; Train · Croatia</small></span></div>
         <p class="muted" style="font-size:14px">Тренувальні яхтенні подорожі узбережжям Хорватії. Концепт спільно з партнером Under the Heavens: яхта, тренер Apollo, капітан, острови Далмації та два тренування на день.</p>
+        <p class="muted" style="font-size:13.5px;margin-top:8px">Telegram <a href="https://t.me/APOLLO_Help_bot">@APOLLO_Help_bot</a> · Under the Heavens <a href="tel:+385913300699">+385 (0)91 3300 699</a> · <a href="https://undertheheavens.sale/">undertheheavens.sale</a></p>
       </div>
       <div>
         <h4 style="font-size:15px">Розділи</h4>
         <p class="muted" style="font-size:14px;line-height:2">
-          <a href="#concept">Концепція</a><br><a href="#day">День у морі</a><br><a href="#yacht">Яхта</a><br><a href="#weather">Погода</a><br><a href="#map">Карта</a><br><a href="#routes">Маршрути</a><br><a href="booking.html">Бронювання</a>
+          <a href="#concept">Концепція</a><br><a href="#day">День у морі</a><br><a href="#yacht">Яхта</a><br><a href="#weather">Погода</a><br><a href="#map">Карта</a><br><a href="#routes">Маршрути</a><br><a href="#booking">Бронювання</a>
         </p>
       </div>
       <div>
@@ -1158,6 +1315,47 @@ window.addEventListener('load', function(){
   document.querySelectorAll('.mbtn').forEach(function(b){b.addEventListener('click',function(){draw(b.getAttribute('data-mroute'));});});
   draw('r1');
 });
+</script>
+<script>
+/* THEME toggle */
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeToggle');
+  function icon(){ if(btn) btn.textContent = (root.getAttribute('data-theme')==='light') ? '\u{1F319}' : '☀️'; }
+  icon();
+  if(btn) btn.addEventListener('click',function(){
+    var next=(root.getAttribute('data-theme')==='light')?'dark':'light';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('apollo-theme',next);}catch(e){}
+    icon();
+  });
+})();
+/* BOOKING calculator (in-flow) */
+(function(){
+  var RT={r1:'№1 · Корнатський баланс',r2:'№2 · Намасте на воді',r3:'№3 · Сила і море',r4:'№4 · Південний вітер',r5:'№5 · Сімейний бриз'};
+  var BASE=1500,CAP=2500,STW=1500,CABINS=4;
+  var cabinTotal=2*BASE+CAP/CABINS+STW/CABINS, perPerson=cabinTotal/2;
+  function fmt(n){var dec=(n%1!==0);var p=(Math.round(n*100)/100).toFixed(dec?2:0).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ');return '€'+p.join(',');}
+  var st={route:'r1',date:'',cabin:null};
+  function val(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+  function selRow(sel,attr,v){document.querySelectorAll(sel).forEach(function(b){b.classList.toggle('active',b.getAttribute(attr)===v);});}
+  function build(){
+    var t='ЗАЯВКА · Apollo Sail & Train\n'+'Маршрут: '+RT[st.route]+'\n'+'Тиждень: '+(st.date||'—')+'\n'+'Каюта: '+(st.cabin?('Каюта '+st.cabin+' · 2 місця (пара)'):'— не обрано —')+'\n'+'Гості: '+(val('n1')||'—')+' + '+(val('n2')||'—')+'\n'+'Контакт: '+(val('em')||'—')+(val('ph')?(' · '+val('ph')):'')+'\n'+(val('note')?('Побажання: '+val('note')+'\n'):'')+'———\n'+'Розрахунок: €4 000 за каюту (€2 000 / особа) = 2×€1 500 + €625 + €375';
+    var o=document.getElementById('summaryOut'); if(o) o.value=t;
+  }
+  function render(){
+    var pp=document.getElementById('perPerson'); if(!pp) return;
+    pp.textContent=fmt(perPerson);
+    document.getElementById('cabinLine').textContent='Каюта (2 особи) — '+fmt(cabinTotal);
+    document.getElementById('selSummary').textContent=RT[st.route]+'  ·  '+(st.date||'дата —')+'  ·  '+(st.cabin?('каюта '+st.cabin):'каюта —');
+    build();
+  }
+  document.querySelectorAll('#routePills .bpill').forEach(function(b){b.addEventListener('click',function(){st.route=b.getAttribute('data-r');selRow('#routePills .bpill','data-r',st.route);render();});});
+  document.querySelectorAll('#datePills .bpill').forEach(function(b){b.addEventListener('click',function(){st.date=b.getAttribute('data-d');selRow('#datePills .bpill','data-d',st.date);render();});});
+  document.querySelectorAll('#cabinGrid .cabin').forEach(function(b){b.addEventListener('click',function(){st.cabin=b.getAttribute('data-c');selRow('#cabinGrid .cabin','data-c',st.cabin);render();});});
+  ['n1','n2','em','ph','note'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',build);});
+  var dp=document.querySelector('#datePills .bpill.active'); if(dp) st.date=dp.getAttribute('data-d');
+  render();
+})();
 </script>
 </body>
 </html>
