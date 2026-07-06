@@ -247,7 +247,8 @@
       <a href="#map">Карта</a>
       <a href="#routes">Маршрути</a>
       <a href="#team">Команда</a>
-      <a class="nav-cta" href="#contact">Забронювати</a>
+      <a href="booking.html">Бронювання</a>
+      <a class="nav-cta" href="booking.html">Забронювати</a>
     </nav>
   </div>
 </header>
@@ -492,9 +493,9 @@
     </div>
     <div id="livemap"></div>
     <div class="map-legend">
-      <span><i style="background:#004fe8"></i>База — Marina Kremik</span>
-      <span><i style="background:#5b8def"></i>Стоянки обраного маршруту</span>
-      <span class="muted">Мапа © OpenStreetMap. Натисни номер маршруту, щоб побачити трек.</span>
+      <span><i style="background:#004fe8"></i>★ База — Marina Kremik (старт і фініш)</span>
+      <span><i style="background:#ffffff;border:2px solid #ff6424"></i>Стоянки маршруту — пронумеровані за днями</span>
+      <span class="muted">Мапа © OpenStreetMap. Перемикай маршрут — лишаються тільки його точки, з'єднані по порядку походу.</span>
     </div>
     <div class="map-layout" id="mapFallback" style="display:none">
     <div class="card" style="padding:14px">
@@ -1051,7 +1052,8 @@
         </div>
       </div>
       <div class="btns" style="margin-top:18px">
-        <a class="btn btn-primary" href="https://apollo.online/events/">Хочу в подорож →</a>
+        <a class="btn btn-primary" href="booking.html">Забронювати каюту →</a>
+        <a class="btn btn-ghost" href="https://apollo.online/events/">Хочу в подорож</a>
         <a class="btn btn-ghost" href="#routes">Ще раз маршрути</a>
       </div>
     </div>
@@ -1068,7 +1070,7 @@
       <div>
         <h4 style="font-size:15px">Розділи</h4>
         <p class="muted" style="font-size:14px;line-height:2">
-          <a href="#concept">Концепція</a><br><a href="#day">День у морі</a><br><a href="#yacht">Яхта</a><br><a href="#weather">Погода</a><br><a href="#map">Карта</a><br><a href="#routes">Маршрути</a>
+          <a href="#concept">Концепція</a><br><a href="#day">День у морі</a><br><a href="#yacht">Яхта</a><br><a href="#weather">Погода</a><br><a href="#map">Карта</a><br><a href="#routes">Маршрути</a><br><a href="booking.html">Бронювання</a>
         </p>
       </div>
       <div>
@@ -1126,18 +1128,31 @@ window.addEventListener('load', function(){
   };
   var map=L.map('livemap',{scrollWheelZoom:false}).setView([43.5,15.95],8);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
-  var used={}; Object.keys(routes).forEach(function(k){routes[k].forEach(function(p){used[p]=1;});});
-  Object.keys(used).forEach(function(p){
-    if(!P[p])return; var home=(p==='kremik');
-    L.circleMarker(P[p],{radius:home?9:6,weight:2,color:'#000000',fillColor:home?'#004fe8':'#5b8def',fillOpacity:1}).addTo(map).bindPopup('<b>'+(names[p]||p)+'</b>');
-  });
+  var markerLayer=L.layerGroup().addTo(map);
+  function stopIcon(txt,home){
+    var sz=home?30:26, bg=home?'#004fe8':'#ffffff', fg=home?'#ffffff':'#0c0c0c', bd=home?'#ffffff':'#ff6424';
+    return L.divIcon({className:'stop-ic',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],html:'<span style="display:grid;place-items:center;width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+bg+';color:'+fg+';border:2px solid '+bd+';font:700 12px/1 var(--font-mono,monospace);box-shadow:0 2px 8px rgba(0,0,0,.5)">'+txt+'</span>'});
+  }
   var line=null;
   function draw(rk){
     if(!routes[rk])return;
     if(line) map.removeLayer(line);
-    var pts=routes[rk].map(function(p){return P[p];});
-    line=L.polyline(pts,{color:'#ff6424',weight:4,opacity:.95}).addTo(map);
-    try{ map.fitBounds(line.getBounds().pad(0.25)); }catch(e){}
+    markerLayer.clearLayers();
+    var seq=routes[rk];
+    var pts=seq.map(function(p){return P[p];}).filter(Boolean);
+    line=L.polyline(pts,{color:'#ff6424',weight:4,opacity:.95,lineJoin:'round',lineCap:'round'}).addTo(map);
+    var no=0, homeDrawn=false;
+    seq.forEach(function(p){
+      if(!P[p])return;
+      if(p==='kremik'){
+        if(homeDrawn)return; homeDrawn=true;
+        L.marker(P[p],{icon:stopIcon('\u2605',true),zIndexOffset:1000,keyboard:false}).addTo(markerLayer).bindPopup('<b>'+(names[p]||p)+'</b><br>старт і фініш');
+      }else{
+        no++;
+        L.marker(P[p],{icon:stopIcon(String(no),false),title:no+'. '+(names[p]||p)}).addTo(markerLayer).bindPopup('<b>'+no+'. '+(names[p]||p)+'</b>');
+      }
+    });
+    try{ map.fitBounds(line.getBounds().pad(0.28)); }catch(e){}
     document.querySelectorAll('.mbtn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-mroute')===rk);});
   }
   document.querySelectorAll('.mbtn').forEach(function(b){b.addEventListener('click',function(){draw(b.getAttribute('data-mroute'));});});
